@@ -1,0 +1,9 @@
+vectorbt
+yfinance
+pandas
+numpy
+plotly
+kaleido
+scikit-learn
+openpyxl
+requests

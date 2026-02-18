@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.png
+stock-bot/data/charts/
+stock-bot/data/*.csv
+!stock-bot/data/sp500_tickers.csv
+stock-bot/plots/
