@@ -1,15 +1,15 @@
 Ticker,Score,Price,RSI,Signals,Status
-QCOM,5,142.31,56.2,"AlphaTrend Bullish, JUST CROSSED (Entry 1)",WATCH
-ARM,3,128.38,62.5,"Macro Bullish, Breaking Prev High",WAIT
-NVDA,2,185.9,50.5,Macro Bullish,WAIT
-AMD,2,197.45,32.8,Deep Dip (Sale),WAIT
-META,2,643.55,38.7,"Moderate Dip, Breaking Prev High",WAIT
-NFLX,2,77.27,42.1,"Moderate Dip, Breaking Prev High",WAIT
-GOOGL,2,300.46,28.3,Deep Dip (Sale),WAIT
-AAPL,2,264.7,48.4,Macro Bullish,WAIT
-TSLA,1,409.54,41.3,Moderate Dip,WAIT
-AMZN,1,200.8,37.5,Moderate Dip,WAIT
-MSFT,1,396.2,35.5,Moderate Dip,WAIT
-SMCI,1,30.2,36.8,Moderate Dip,WAIT
-AVGO,0,328.32,46.2,,WAIT
-PLTR,0,132.32,46.1,,WAIT
+ARM,7,128.68,62.6,"Macro Bullish, AlphaTrend Bullish, JUST CROSSED (Entry 1)",WATCH
+QCOM,4,143.98,60.6,"AlphaTrend Bullish, Breaking Prev High",WAIT
+NVDA,3,189.58,60.1,"Macro Bullish, Breaking Prev High",WAIT
+AMD,2,201.88,41.7,"Moderate Dip, Breaking Prev High",WAIT
+AAPL,2,265.68,50.7,Macro Bullish,WAIT
+META,1,640.69,36.3,Moderate Dip,WAIT
+AMZN,1,206.46,57.1,Breaking Prev High,WAIT
+MSFT,1,401.21,46.7,Breaking Prev High,WAIT
+GOOGL,1,303.42,36.8,Moderate Dip,WAIT
+AVGO,1,336.24,55.7,Breaking Prev High,WAIT
+SMCI,1,30.35,39.6,Moderate Dip,WAIT
+PLTR,1,139.3,59.6,Breaking Prev High,WAIT
+TSLA,0,413.76,47.5,,WAIT
+NFLX,0,77.6,45.0,,WAIT

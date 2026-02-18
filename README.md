@@ -1,34 +1,30 @@
-# Alpha Predator: Real-Time 4H Swing Bot 🦅
+# US Equities Alpha Predator Swing Bot
 
-A high-performance autonomous trading daemon designed for **Tick-by-Tick monitoring** of US Equities. It evolves the Alpha Accumulator into a persistent "Predator" engine that executes high-conviction swings with institutional-grade filters.
+A robust, statistically-driven swing trading system for US Equities using Python, `vectorbt`, and `alpaca-py`.
 
-## 🚀 The Predator Upgrade (New)
-- **Real-Time Monitoring**: Moves from 4-hour polling to 1-minute stateful scanning.
-- **Rolling Resampler**: Maintains a live 4-hour window updated every 60 seconds for precision execution.
-- **Institutional Filters**: 
-    - **Relative Strength**: Automatic outperformance check against SPY.
-    - **Sector Tailwinds**: Symmetry check across SEMIS and BIG_TECH cohorts.
-- **Elite Execution**: Hard-coded ATR-based Bracket Orders with exchange-side safety.
+## 🚀 Overview
+The "Alpha Predator" engine is designed for high-conviction swing trading (4H timeframe) across a broad universe of ~2,500 tickers (S&P 500, Nasdaq 100, Dow 30, Russell 2000).
 
-## 🧠 The 12-Point Predator Scorecard
-The scoring system now incorporates macro and sector intelligence:
+## 🛠 Features
+- **Filter & Focus Pipeline**: Weekly macro screening of 2,400+ tickers to identify top candidates, reducing live API load.
+- **12-Point Predator Scorecard**: A multi-factor scoring system including:
+    - **AlphaTrend**: Core trend-following indicator.
+    - **Trend Quality Alpha**: ADX (Intensity), R² (Smoothness), and Linear Regression Slope (Acceleration).
+    - **RSI Alpha**: Automated detection of Bullish Momentum Divergence.
+    - **Relative Strength**: Outperformance vs. SPY.
+    - **Sector Tailwinds**: Peer group correlation analysis.
+- **Automated Execution**: Bracket orders (Stop Loss & Take Profit) via Alpaca Paper/Live API.
 
-| Layer | Criteria | Score |
-| :--- | :--- | :---: |
-| **Macro** | Price > SMA 200 | **+2** |
-| **Trend** | AlphaTrend K1 > K2 | **+3** |
-| **Trigger** | Bullish Cross (Bar 1-2) | **+2** |
-| **Value** | RSI < 35 | **+2** |
-| **Breakout** | Price > Prev Day High | **+1** |
-| **Strength** | Outperforming SPY (1D) | **+1** |
-| **Sector** | 2+ Peers Bullish | **+1** |
+## 📁 Structure
+- `predator_engine.py`: The live execution engine (resamples 1H to 4H).
+- `alpha_screener_expanded.py`: The weekly batch screener.
+- `trend_alpha.py`: Logic for Trend Quality metrics.
+- `rsi_alpha.py`: Logic for RSI Divergence and support bounces.
+- `indicators.py`: Implementation of the AlphaTrend indicator.
+- `visualizer.py`: Generates trade cards for entry signals.
 
-**Thresholds**: 9+ Predator Entry | 5-8 Watch | <5 Ignore
-
-## 📂 New Core Engine
-- `predator_engine.py`: The persistent trading daemon.
-- `visualizer.py`: Automated "Trade Card" chart generation.
-- `strategy_config.md`: Updated rules for real-time operation.
-
----
-*Disclaimer: For educational and paper trading purposes only.*
+## 📊 Strategy: The Alpha Predator
+**Goal**: Identify "Institutional-Quality Runners" or "Elite Reversal Coils."
+- **Entry**: Score ≥ 9/12 on the 4-Hour timeframe.
+- **Exit**: AlphaTrend trend breakdown or bracket closure.
+- **Risk Management**: Dynamic ATR-based stop-loss and profit targets.
