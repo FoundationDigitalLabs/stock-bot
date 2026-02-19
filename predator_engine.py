@@ -9,7 +9,7 @@ from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
-from alpaca.trading.requests import MarketOrderRequest
+from alpaca.trading.requests import LimitOrderRequest, MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
 
 import pandas_ta as ta
@@ -17,6 +17,7 @@ from indicators import calculate_alphatrend
 from rsi_alpha import find_bullish_divergence, check_rsi_support_bounce
 from trend_alpha import calculate_trend_quality
 from visualizer import generate_trade_card
+from logger_alpha import log_trade_entry, log_trade_exit
 # Notification hook placeholder
 
 class AlphaPredator:
@@ -214,9 +215,14 @@ class AlphaPredator:
                                 take_profit_price = round(price + (atr * 7.5), 2)
                                 print(f"🎯 PREDATOR ENTRY: {ticker} | Score: {score}")
                                 try:
+                                    # Use Limit Order for opening protection if market is closed
+                                    # Or a very tight Limit Order during market hours to prevent slippage
+                                    limit_price = round(price * 1.005, 2) # 0.5% buffer
+                                    
                                     self.trading_client.submit_order(
-                                        MarketOrderRequest(
+                                        LimitOrderRequest(
                                             symbol=ticker, qty=qty, side=OrderSide.BUY,
+                                            limit_price=limit_price,
                                             time_in_force=TimeInForce.GTC, order_class="bracket",
                                             stop_loss={'stop_price': stop_loss_price},
                                             take_profit={'limit_price': take_profit_price}
@@ -230,6 +236,9 @@ class AlphaPredator:
                                     card_path = generate_trade_card(ticker, df_plot, price, stop_loss_price, take_profit_price, signals)
                                     print(f"📊 Trade Card generated: {card_path}")
                                     
+                                    # Performance Auditing (NEW)
+                                    log_trade_entry(ticker, price, score, signals, qty, stop_loss_price, take_profit_price)
+                                    
                                     # ADD TO LOCAL POSITIONS TO PREVENT DOUBLE-DIP IN SAME LOOP
                                     positions[ticker] = True 
                                     
@@ -240,6 +249,7 @@ class AlphaPredator:
                         if "AlphaTrend Bullish" not in signals:
                             print(f"⚠️ PREDATOR EXIT: {ticker} | Trend Breakdown")
                             self.trading_client.close_position(ticker)
+                            log_trade_exit(ticker, price, "Trend Breakdown")
 
                 await asyncio.sleep(300) # Check every 5 minutes instead of 1 minute
             except Exception as e:
