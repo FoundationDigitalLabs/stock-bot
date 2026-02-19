@@ -189,47 +189,59 @@ class AlphaPredator:
                 # 1. Optimized Update
                 await self.update_latest_data()
                 
-                # 2. Get Positions
-                positions = {p.symbol: p for p in self.trading_client.get_all_positions()}
+                # 2. Sync Equity (Positions synced inside loop)
                 account = self.trading_client.get_account()
                 equity = float(account.equity)
                 
                 # 3. Process Watchlist
                 for ticker in self.watchlist:
+                    # REAL-TIME INVENTORY CHECK (Added inside the loop)
+                    current_positions = {p.symbol: p for p in self.trading_client.get_all_positions()}
+                    
                     score, signals, price, atr = self.calculate_predator_score(ticker)
                     
-                    if score >= 9 and ticker not in positions:
-                        qty = int((equity * 0.02) / price)
-                        if qty > 0:
-                            stop_loss_price = round(price - (atr * 2.5), 2)
-                            take_profit_price = round(price + (atr * 7.5), 2)
-                            print(f"🎯 PREDATOR ENTRY: {ticker} | Score: {score}")
-                            self.trading_client.submit_order(
-                                MarketOrderRequest(
-                                    symbol=ticker, qty=qty, side=OrderSide.BUY,
-                                    time_in_force=TimeInForce.GTC, order_class="bracket",
-                                    stop_loss={'stop_price': stop_loss_price},
-                                    take_profit={'limit_price': take_profit_price}
-                                )
-                            )
-                            # Trade Card logic
-                            df_plot = self.data_cache[ticker].resample('4h').agg({
-                                'Open': 'first', 'High': 'max', 'Low': 'min', 'Close': 'last', 'Volume': 'sum'
-                            }).dropna()
-                            df_plot = calculate_alphatrend(df_plot)
-                            card_path = generate_trade_card(ticker, df_plot, price, stop_loss_price, take_profit_price, signals)
-                            
-                            # Log to console/log file
-                            print(f"📊 Trade Card generated: {card_path}")
-                            # The agent will handle the actual delivery via the messaging tool in its own loop if needed, 
-                            # or we can add a notification hook here.
+                    if score >= 9:
+                        if ticker not in current_positions:
+                            qty = int((equity * 0.02) / price)
+                            if qty > 0:
+                                # Final check for existing pending orders for this specific ticker
+                                existing_orders = self.trading_client.get_orders()
+                                if any(o.symbol == ticker for o in existing_orders):
+                                    print(f"⏳ Order already pending for {ticker}. Skipping.")
+                                    continue
+                                    
+                                stop_loss_price = round(price - (atr * 2.5), 2)
+                                take_profit_price = round(price + (atr * 7.5), 2)
+                                print(f"🎯 PREDATOR ENTRY: {ticker} | Score: {score}")
+                                try:
+                                    self.trading_client.submit_order(
+                                        MarketOrderRequest(
+                                            symbol=ticker, qty=qty, side=OrderSide.BUY,
+                                            time_in_force=TimeInForce.GTC, order_class="bracket",
+                                            stop_loss={'stop_price': stop_loss_price},
+                                            take_profit={'limit_price': take_profit_price}
+                                        )
+                                    )
+                                    # Trade Card logic
+                                    df_plot = self.data_cache[ticker].resample('4h').agg({
+                                        'Open': 'first', 'High': 'max', 'Low': 'min', 'Close': 'last', 'Volume': 'sum'
+                                    }).dropna()
+                                    df_plot = calculate_alphatrend(df_plot)
+                                    card_path = generate_trade_card(ticker, df_plot, price, stop_loss_price, take_profit_price, signals)
+                                    print(f"📊 Trade Card generated: {card_path}")
+                                    
+                                    # ADD TO LOCAL POSITIONS TO PREVENT DOUBLE-DIP IN SAME LOOP
+                                    positions[ticker] = True 
+                                    
+                                except Exception as e:
+                                    print(f"❌ Order failed for {ticker}: {e}")
 
-                    elif ticker in positions:
+                    elif ticker in current_positions:
                         if "AlphaTrend Bullish" not in signals:
                             print(f"⚠️ PREDATOR EXIT: {ticker} | Trend Breakdown")
                             self.trading_client.close_position(ticker)
 
-                await asyncio.sleep(60) # High-freq 1 min check
+                await asyncio.sleep(300) # Check every 5 minutes instead of 1 minute
             except Exception as e:
                 print(f"❌ Predator Engine Error: {e}")
                 await asyncio.sleep(30)
