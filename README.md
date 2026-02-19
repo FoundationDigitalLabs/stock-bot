@@ -14,6 +14,8 @@ The "Alpha Predator" engine is designed for high-conviction swing trading (4H ti
     - **Relative Strength**: Outperformance vs. SPY.
     - **Sector Tailwinds**: Peer group correlation analysis.
 - **Automated Execution**: Bracket orders (Stop Loss & Take Profit) via Alpaca Paper/Live API.
+- **Limit Order Protection**: Automated Limit Order logic with price-gap protection for market opens.
+- **Technical Auditing**: Full lifecycle tracking of every trade in `data/trades_audit.json`, including entry scores, specific indicator signals, and exit reasons for strategy optimization.
 
 ## 📁 Structure
 - `predator_engine.py`: The live execution engine (resamples 1H to 4H).
@@ -22,6 +24,7 @@ The "Alpha Predator" engine is designed for high-conviction swing trading (4H ti
 - `rsi_alpha.py`: Logic for RSI Divergence and support bounces.
 - `indicators.py`: Implementation of the AlphaTrend indicator.
 - `visualizer.py`: Generates trade cards for entry signals.
+- `logger_alpha.py`: Handles structured technical auditing and performance logging.
 
 ## 📊 Strategy: The Alpha Predator
 **Goal**: Identify "Institutional-Quality Runners" or "Elite Reversal Coils."
