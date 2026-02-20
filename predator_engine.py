@@ -17,7 +17,7 @@ from indicators import calculate_alphatrend
 from rsi_alpha import find_bullish_divergence, check_rsi_support_bounce
 from trend_alpha import calculate_trend_quality
 from visualizer import generate_trade_card
-from logger_alpha import log_trade_entry, log_trade_exit
+from logger_alpha import log_trade_entry, log_trade_exit, get_recent_exits
 # Notification hook placeholder
 
 class AlphaPredator:
@@ -195,7 +195,16 @@ class AlphaPredator:
                 equity = float(account.equity)
                 
                 # 3. Process Watchlist
+                recent_exits = get_recent_exits()
+                
                 for ticker in self.watchlist:
+                    # 3a. 21-Day Cool Down Check
+                    if ticker in recent_exits:
+                        exit_dt = datetime.fromisoformat(recent_exits[ticker])
+                        if datetime.now() - exit_dt < timedelta(days=30): # 21 trading days approx 30 cal days
+                            # print(f"⏳ {ticker} in 21-day cool down. Skipping.")
+                            continue
+
                     # REAL-TIME INVENTORY CHECK (Added inside the loop)
                     current_positions = {p.symbol: p for p in self.trading_client.get_all_positions()}
                     

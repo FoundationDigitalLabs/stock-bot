@@ -53,8 +53,31 @@ def log_trade_exit(ticker, price, reason):
         if os.path.exists(TRADES_LOG_PATH):
             with open(TRADES_LOG_PATH, "r") as f:
                 logs = json.load(f)
-            logs.append(trade_data)
-            with open(TRADES_LOG_PATH, "w") as f:
-                json.dump(logs, f, indent=4)
+        else:
+            logs = []
+            
+        logs.append(trade_data)
+        with open(TRADES_LOG_PATH, "w") as f:
+            json.dump(logs, f, indent=4)
     except Exception as e:
         print(f"Error logging exit: {e}")
+
+def get_recent_exits():
+    """
+    Returns a dictionary of ticker: last_exit_timestamp
+    """
+    if not os.path.exists(TRADES_LOG_PATH):
+        return {}
+    
+    try:
+        with open(TRADES_LOG_PATH, "r") as f:
+            logs = json.load(f)
+        
+        exits = {}
+        for entry in logs:
+            if entry.get("action") == "EXIT":
+                exits[entry["ticker"]] = entry["timestamp"]
+        return exits
+    except Exception as e:
+        print(f"Error reading exits: {e}")
+        return {}

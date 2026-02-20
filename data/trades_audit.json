@@ -1,0 +1,54 @@
+[
+    {
+        "timestamp": "2026-02-19T08:56:57.432775",
+        "ticker": "CRGY",
+        "action": "ENTRY",
+        "price": 10.57,
+        "score": 9,
+        "qty": 189,
+        "stop_loss": 10.0,
+        "take_profit": 12.28,
+        "signals": [
+            "Macro Bullish",
+            "AlphaTrend Bullish",
+            "Breakout",
+            "Trend Accelerating",
+            "Relative Strength"
+        ]
+    },
+    {
+        "timestamp": "2026-02-19T08:56:59.476260",
+        "ticker": "OLMA",
+        "action": "ENTRY",
+        "price": 22.73,
+        "score": 10,
+        "qty": 87,
+        "stop_loss": 20.68,
+        "take_profit": 28.89,
+        "signals": [
+            "Moderate Dip",
+            "Breakout",
+            "Bullish Divergence (Elite)",
+            "Strong Trend (ADX:29)",
+            "Decent Trend",
+            "Relative Strength"
+        ]
+    },
+    {
+        "timestamp": "2026-02-19T09:22:09.602358",
+        "ticker": "MITK",
+        "action": "ENTRY",
+        "price": 13.365,
+        "score": 9,
+        "qty": 149,
+        "stop_loss": 12.45,
+        "take_profit": 16.12,
+        "signals": [
+            "Macro Bullish",
+            "Breakout",
+            "Strong Trend (ADX:34)",
+            "High Quality Trend (Smooth)",
+            "Trend Accelerating"
+        ]
+    }
+]
